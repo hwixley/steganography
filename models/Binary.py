@@ -1,4 +1,5 @@
 from bitarray import bitarray
+from typing import List
 
 class BinaryBytes:
 
@@ -8,7 +9,7 @@ class BinaryBytes:
     def __str__(self):
         return ''.join(format(byte, '08b') for byte in self.bytes_data)
     
-    def to_bits_array(self) -> list[bool]:
+    def to_bits_array(self) -> List[bool]:
         bits = [self.access_bit(self.bytes_data,i) == 1 for i in range(len(self.bytes_data)*8)]
         return bits
     
@@ -28,7 +29,7 @@ class BinaryString:
     def str_to_bytes(self) -> bytes:
         return self.bool_to_bytes([1 if c == '1' else 0 for c in self.string_data])
     
-    def bool_to_bytes(self, bits: list[bool]) -> bytes:
+    def bool_to_bytes(self, bits: List[bool]) -> bytes:
         ba = bitarray(bits)
         return ba.tobytes()
     

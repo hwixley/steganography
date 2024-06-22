@@ -30,7 +30,7 @@ class XImage:
         bool_map = (bitmap or self.bitmap).get(self.pixels)
         return bool_map
 
-    def bitmap_encode(self, bits: list[bool]) -> np.ndarray:
+    def bitmap_encode(self, bits: List[bool]) -> np.ndarray:
         img = self.pixels
         shape = img.shape
         
