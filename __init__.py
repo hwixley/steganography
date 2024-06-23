@@ -1,28 +1,25 @@
 from PIL import Image
 import numpy as np
-from models.XImage import XImage
-from models.XText import XText
-from models.XEncoder import XEncoder
+from services.steganographer import Steganographer
 
 def save(arr: np.ndarray, fname: str):
     Image.fromarray(arr).save(fname)
 
 
-encoder = XEncoder()
-image = XImage(fname="sample.png")
-text = XText(text="Hello good sir this is a dear message that I hope finds you well I hope the supplementary image was complementary tooProps on getting to this point it means the script must have worked")
-
+test_text="Hello good sir this is a dear message that I hope finds you well I hope the supplementary image was complementary tooProps on getting to this point it means the script must have worked"
 
 if __name__ == "__main__":
-    bitmask = text.to_bits_array()
-    encoded = encoder.encode(data=image.pixels, bitmask=bitmask)
+    st = Steganographer()
 
+    encoded, bm_len = st.encode_text_to_image(
+        text=test_text,
+        image_path="sample.png"
+    )
     save(arr=encoded, fname="encoded.png")
-    encoded_image = XImage(fname="encoded.png").pixels
-    
-    print(f"The generated bitmap is {len(bitmask)} bits / {len(bitmask)/8} bytes long")
-    assert (encoded == encoded_image).all()
 
-    decoded_bitstr = encoder.decode(encoded=encoded_image, length=len(bitmask))
-    decoded = encoder.bits_to_encoding(bitstr=decoded_bitstr)
+    decoded = st.decode_text_from_image(
+        image_path="encoded.png",
+        length=bm_len
+    )
+
     print(decoded)
