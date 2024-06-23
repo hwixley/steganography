@@ -13,7 +13,9 @@ if __name__ == "__main__":
     image.save(arr=encoded, fname="encoded.png")
     print(f"The generated bitmap is {len(bits)} bits / {len(bits)/8} bytes long")
 
-    decoded = BinaryString(string_data=image.bitmap_decode(encoded=encoded, length=len(bits)))
+    encoded_image = XImage(fname="encoded.png").pixels
+    assert (encoded == encoded_image).all()
+    decoded = BinaryString(string_data=image.bitmap_decode(encoded=encoded_image, length=len(bits)))
     decoded_str = decoded.bytes_to_encoding()
     # print(decoded_str)
     # image.save(arr=decoded, fname="decoded.png")
