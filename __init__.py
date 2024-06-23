@@ -9,13 +9,12 @@ text = Text(text="Hello good sir this is a dear message that I hope finds you we
 if __name__ == "__main__":
     binary = BinaryBytes(bytes_data=text.to_bytes())
     bits = binary.to_bits_array()
-
     encoded = image.bitmap_encode(bits=bits)
     image.save(arr=encoded, fname="encoded.png")
     print(f"The generated bitmap is {len(bits)} bits / {len(bits)/8} bytes long")
 
-    decoded = BinaryString(string_data=image.bitmap_decode(encoded=encoded))
+    decoded = BinaryString(string_data=image.bitmap_decode(encoded=encoded, length=len(bits)))
     decoded_str = decoded.bytes_to_encoding()
-    print(decoded_str)
+    # print(decoded_str)
     # image.save(arr=decoded, fname="decoded.png")
     

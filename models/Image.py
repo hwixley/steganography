@@ -1,5 +1,4 @@
 from PIL import Image
-#import Image 
 import numpy as np
 from math import prod
 from enum import Enum
@@ -13,6 +12,7 @@ class XImage:
         def get(self, a):
             if self == self.PARITY:
                 return a % 2 == 0
+            return None
 
     def __init__(self, fname: str, bitmap: Bitmap = Bitmap.PARITY):
         self.fname = fname
@@ -33,6 +33,7 @@ class XImage:
     def bitmap_encode(self, bits: List[bool]) -> np.ndarray:
         img = self.pixels
         shape = img.shape
+        print(shape)
         
         if len(bits) > prod(shape):
             print(f"ERROR: bitmap ({len(bits)}) is larger than image ({prod(shape)})")
@@ -43,20 +44,21 @@ class XImage:
             for j in range(shape[1]):
                 for k in range(shape[2]):
                     val = img[i,j,k]
-                    if self.bitmap.get(val) != (bits[idx] == 1):
+                    if self.bitmap.get(val) != bits[idx]:
                         img[i,j,k] += -1 if val > 0 else 1
                     idx += 1
 
                     if idx >= len(bits):
                         return img
+        return None
 
     def save(self, arr, fname):
         img = Image.fromarray(arr)
         img.save(fname)
 
-    def bitmap_decode(self, encoded: np.ndarray) -> str:
+    def bitmap_decode(self, encoded: np.ndarray, length: Optional[int] = None) -> str:
         bitmap = self.bitmap.get(encoded)
         mask = bitmap.flatten()
         s = "".join(["1" if b else "0" for b in mask])
-        return s
+        return s[:length]
 
