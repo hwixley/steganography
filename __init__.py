@@ -2,7 +2,6 @@ from PIL import Image
 import numpy as np
 from models.XImage import XImage
 from models.XText import XText
-from models.XBinary import XBinaryString
 from models.XEncoder import XEncoder
 
 def save(arr: np.ndarray, fname: str):
@@ -23,6 +22,7 @@ if __name__ == "__main__":
     
     print(f"The generated bitmap is {len(bitmask)} bits / {len(bitmask)/8} bytes long")
     assert (encoded == encoded_image).all()
-    
-    decoded = XBinaryString(string_data=encoder.decode(encoded=encoded_image, length=len(bitmask)))
-    decoded_str = decoded.bytes_to_encoding()
+
+    decoded_bitstr = encoder.decode(encoded=encoded_image, length=len(bitmask))
+    decoded = encoder.bits_to_encoding(bitstr=decoded_bitstr)
+    print(decoded)

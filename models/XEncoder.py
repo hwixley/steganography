@@ -53,3 +53,6 @@ class XEncoder:
         s = "".join(["1" if b else "0" for b in mask])
         return s[:length]
     
+    def bits_to_encoding(self, bitstr: str, encoding: str = "utf-8") -> str:
+        bitstr_bytes = int(bitstr, 2).to_bytes((len(bitstr) + 7) // 8, byteorder='big')
+        return bitstr_bytes.decode(encoding=encoding)
