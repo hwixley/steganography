@@ -11,12 +11,13 @@ class Steganographer:
     def __init__(self, encoder: XEncoder = XEncoder()):
         self.encoder = encoder
 
-    def encode_text_to_image(self, text: str, image_path: str) -> Tuple[np.ndarray,int]:
+    def encode_text_to_image(self, text: str, image_path: str) -> Tuple[np.ndarray, int, int]:
         image = XImage(fname=image_path)
         bitmask = XText(text).to_bits_array()
-        return self.encoder.encode(data=image.pixels, bitmask=bitmask), len(bitmask)
+        encoded, offset = self.encoder.encode(data=image.pixels, bitmask=bitmask)
+        return encoded, len(bitmask), offset
 
-    def decode_text_from_image(self, image_path: str, length: Optional[int] = None) -> str:
+    def decode_text_from_image(self, image_path: str, length: Optional[int] = None, offset: Optional[int] = None) -> str:
         image = XImage(fname=image_path)
-        decoded_bitstr = self.encoder.decode(encoded=image.pixels, length=length)
+        decoded_bitstr = self.encoder.decode(encoded=image.pixels, length=length, offset=offset)
         return self.encoder.bits_to_encoding(bitstr=decoded_bitstr)
