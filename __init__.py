@@ -1,22 +1,41 @@
-from models.Image import XImage
-from models.Text import Text
-from models.Binary import BinaryBytes, BinaryString
+from PIL import Image
+import numpy as np
+from services.steganographer import Steganographer
+from argparse import ArgumentParser
+from pathlib import Path
 
-image = XImage(fname="sample.png")
-text = Text(text="Hello good sir this is a dear message that I hope finds you well I hope the supplementary image was complementary tooProps on getting to this point it means the script must have worked")
+
+def save(arr: np.ndarray, fname: str):
+    Image.fromarray(arr).save(fname)
+
+
+default_text = "If you're reading this it means you did not input any custom text, or maybe you wanted to see this message instead, well if so it worked! WOOP Your image is now secretly encoded with this message."
+default_img = "sample.png"
+default_dest = "encoded.png"
+
+arg_parser = ArgumentParser()
+arg_parser.add_argument("--text", "-t", type=str, default=default_text)
+arg_parser.add_argument("--image", "-i", type=Path, default=default_img)
+arg_parser.add_argument("--output-path", "-o", type=Path, default=default_dest)
 
 
 if __name__ == "__main__":
-    binary = BinaryBytes(bytes_data=text.to_bytes())
-    bits = binary.to_bits_array()
-    encoded = image.bitmap_encode(bits=bits)
-    image.save(arr=encoded, fname="encoded.png")
-    print(f"The generated bitmap is {len(bits)} bits / {len(bits)/8} bytes long")
+    args = arg_parser.parse_args()
 
-    encoded_image = XImage(fname="encoded.png").pixels
-    assert (encoded == encoded_image).all()
-    decoded = BinaryString(string_data=image.bitmap_decode(encoded=encoded_image, length=len(bits)))
-    decoded_str = decoded.bytes_to_encoding()
-    # print(decoded_str)
-    # image.save(arr=decoded, fname="decoded.png")
-    
+    st = Steganographer()
+
+    encoded, bm_len, bm_offset = st.encode_text_to_image(
+        text=args.text,
+        image_path=args.image
+    )
+    save(arr=encoded, fname=args.output_path)
+    print(f"bm len: {bm_len}")
+    print(f"bm offset: {bm_offset}")
+
+    decoded = st.decode_text_from_image(
+        image_path=args.output_path,
+        length=bm_len,
+        offset=bm_offset
+    )
+
+    print(decoded)
