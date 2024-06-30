@@ -8,8 +8,13 @@ class XImage:
         self.pixels = self.load_image()
 
     def load_image(self) -> np.ndarray:
-        img = Image.open(self.fname)
-        return np.array(img)
+        try:
+            img = Image.open(self.fname)
+            return np.array(img)
+        except FileNotFoundError as e:
+            print(e)
+            print("Exiting...")
+            exit(1)
 
 
 
