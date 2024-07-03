@@ -19,7 +19,7 @@ default_dest = "encoded.png"
 arg_parser = ArgumentParser()
 arg_parser.add_argument("--mode", "-m", type=XMode, default=default_mode)
 arg_parser.add_argument("--text", "-t", type=str, default=default_text)
-arg_parser.add_argument("--image", "-i", type=Path, default=default_img, required=True)
+arg_parser.add_argument("--image", "-i", type=Path, default=default_img)
 arg_parser.add_argument("--output-path", "-o", type=Path, default=default_dest)
 arg_parser.add_argument("--key", "-k", type=str)
 
