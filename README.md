@@ -15,6 +15,11 @@ python3 __init__.py <args>
 ```
 
 ## Arguments
-- `--text <text>` | `-t <text>` - the text you want to encode.
-- `--image <image-path>` | `-i <image-path>` - the image you want to encode the text onto.
-- `--output_path <output-path>` | `-o <output-path>` - the output path for your encoded image.
+- `--mode <encode|decode>` | `-m <encode|decode>` - the mode you want to run.
+    - Encoding mode args:
+        - `--text <text>` | `-t <text>` - the text you want to encode.
+        - `--image <image-path>` | `-i <image-path>` - the image you want to encode the text onto.
+        - `--output_path <output-path>` | `-o <output-path>` - the output path for your encoded image.
+    - Decoding mode args:
+        - `--image <image-path>` | `-i <image_path>` - the image you want to decode text from.
+
