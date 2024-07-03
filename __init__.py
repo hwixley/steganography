@@ -19,9 +19,9 @@ default_dest = "encoded.png"
 arg_parser = ArgumentParser()
 arg_parser.add_argument("--mode", "-m", type=XMode, default=default_mode)
 arg_parser.add_argument("--text", "-t", type=str, default=default_text)
-arg_parser.add_argument("--image", "-i", type=Path, default=default_img)
+arg_parser.add_argument("--image", "-i", type=Path, default=default_img, required=True)
 arg_parser.add_argument("--output-path", "-o", type=Path, default=default_dest)
-
+arg_parser.add_argument("--key", "-k", type=str)
 
 if __name__ == "__main__":
     args = arg_parser.parse_args()
@@ -45,7 +45,17 @@ if __name__ == "__main__":
         print(f"\nDecoded text from the generated '{args.output_path}' file:\n\"\"\"\n{decoded}\n\"\"\"")
     
     elif args.mode == XMode.DECODE:
-        ...
+        if key := args.key:
+            decoded = st.decode_text_from_image(
+                image_path=args.image,
+                key=key
+            )
+
+            print(f"\nDecoded text from the encoded '{args.output_path}' file:\n\"\"\"\n{decoded}\n\"\"\"")
+        else:
+            print(f"ERROR: you have not specified a key, exiting...")
+            exit(1)
 
     else:
         print(f"ERROR: invalid mode '{args.mode}', exiting...")
+        exit(1)

@@ -11,9 +11,8 @@ class XImage:
         try:
             img = Image.open(self.fname)
             return np.array(img)
-        except FileNotFoundError as e:
-            print(e)
-            print("Exiting...")
+        except Exception:
+            print(f"ERROR: The file {self.fname} cannot be opened, exiting...")
             exit(1)
 
 

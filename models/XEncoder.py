@@ -72,5 +72,9 @@ class XEncoder:
         return s
     
     def bits_to_encoding(self, bitstr: str, encoding: str = "utf-8") -> str:
-        bitstr_bytes = int(bitstr, 2).to_bytes((len(bitstr) + 7) // 8, byteorder='big')
-        return bitstr_bytes.decode(encoding=encoding)
+        try:
+            bitstr_bytes = int(bitstr, 2).to_bytes((len(bitstr) + 7) // 8, byteorder='big')
+            return bitstr_bytes.decode(encoding=encoding)
+        except Exception:
+            print("ERROR: cannot decode the data to text, you have input something wrong, exiting...")
+            exit(1)

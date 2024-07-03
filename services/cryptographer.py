@@ -9,6 +9,10 @@ class Cryptographer:
     
     @staticmethod
     def deobf_key(obf_text: str) -> Tuple[int, int]:
-        deobf = b64decode(obf_text.encode()).decode()
-        vals = deobf.split("-")
-        return int(vals[0]), int(vals[1])
+        try:
+            deobf = b64decode(obf_text.encode()).decode()
+            vals = deobf.split("-")
+            return int(vals[0]), int(vals[1])
+        except Exception:
+            print("ERROR: the key you have entered is invalid, exiting...")
+            exit(1)

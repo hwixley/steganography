@@ -22,4 +22,5 @@ python3 __init__.py <args>
         - `--output_path <output-path>` | `-o <output-path>` - the output path for your encoded image.
     - Decoding mode args:
         - `--image <image-path>` | `-i <image_path>` - the image you want to decode text from.
+        - `--key <key>` | `-k <key>` - the key to enable the decoding of the image.
 
