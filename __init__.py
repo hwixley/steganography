@@ -30,10 +30,17 @@ if __name__ == "__main__":
     st = Steganographer()
 
     if args.mode == XMode.ENCODE:
-        data = args.file or args.text
+        text = args.text
+        if fpath := args.file:
+            try:
+                with open(fpath, "r") as f:
+                    text = f.read()
+            except Exception:
+                print(f"ERROR: the file '{fpath}' could not be opened, exiting...")
+                exit(1)
 
         encoded, key = st.encode_text_to_image(
-            text=data,
+            text=text,
             image_path=args.image
         )
         save(arr=encoded, fname=args.output_path)
