@@ -19,6 +19,7 @@ default_dest = "encoded.png"
 arg_parser = ArgumentParser()
 arg_parser.add_argument("--mode", "-m", type=XMode, default=default_mode)
 arg_parser.add_argument("--text", "-t", type=str, default=default_text)
+arg_parser.add_argument("--file", "-f", type=Path)
 arg_parser.add_argument("--image", "-i", type=Path, default=default_img)
 arg_parser.add_argument("--output-path", "-o", type=Path, default=default_dest)
 arg_parser.add_argument("--key", "-k", type=str)
@@ -29,8 +30,10 @@ if __name__ == "__main__":
     st = Steganographer()
 
     if args.mode == XMode.ENCODE:
+        data = args.file or args.text
+
         encoded, key = st.encode_text_to_image(
-            text=args.text,
+            text=data,
             image_path=args.image
         )
         save(arr=encoded, fname=args.output_path)
