@@ -5,10 +5,6 @@ from pathlib import Path
 
 class Default:
     output_type = XOutput.FILE
-    input_text = "If you're reading this it means you did not input any custom text, or maybe you wanted to see this message instead, well if so it worked! WOOP Your image is now secretly encoded with this message."
-    input_file = None
-    input_image = "sample.png"
-    export_path = "encoded.png"
 
     @staticmethod
     def arg_parser() -> ArgumentParser:

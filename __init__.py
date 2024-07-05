@@ -17,9 +17,12 @@ if __name__ == "__main__":
     args = Default.arg_parser().parse_args()
     st = Steganographer()
 
-    export_path = args.export_path or (f"{Path(args.input_image).stem}._encoded.png" if args.input_image is not None else None)
+    enc_export = f"{Path(args.input_image).stem}._encoded.png"
+    dec_export = f"{args.input_image}._decoded.txt"
 
     if args.mode == XMode.ENCODE:
+        export_path = args.export_path or enc_export
+
         text = args.text
         if fpath := args.file:
             try:
@@ -56,6 +59,8 @@ if __name__ == "__main__":
                 f.write(key)
     
     elif args.mode == XMode.DECODE:
+        export_path = args.export_path or dec_export
+
         kfile = f"{args.input_image}.key"
         key = args.key
         if args.input_image is None:
@@ -76,6 +81,13 @@ if __name__ == "__main__":
                 key=key
             )
             print(f"[ SUCCESS ] Decoded text from the encoded '{args.input_image}' file:\n\"\"\"\n{decoded}\n\"\"\"")
+            try:
+                with open(export_path, "w") as f:
+                    f.write(decoded)
+                print(f"[ INFO ] Exported decoded data to '{export_path}'")
+            except Exception:
+                print(f"[ ERROR ] Failed to export decoded text to path '{export_path}'")
+
         else:
             print(f"[ ERROR ] You have not specified a key, exiting...")
             exit(1)
