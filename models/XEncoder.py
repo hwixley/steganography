@@ -3,7 +3,7 @@ from math import prod
 from bitarray import bitarray
 from enum import Enum
 from typing import Optional, List, Tuple
-from random import randint
+from random import randint, getrandbits
 
 class XEncoder:
 
@@ -46,22 +46,29 @@ class XEncoder:
                         if bm_idx >= len(bitmask):
                             return data, offset
 
+                    elif bool(getrandbits(1)):
+                        data[i,j] += -1 if val > 0 else 1
+
                     iter_idx += 1
 
         elif len(shape) == 3:
             for i in range(shape[0]):
                 for j in range(shape[1]):
                     for k in range(shape[2]):
-                        if iter_idx >= offset:
+                        if iter_idx >= offset and bm_idx < len(bitmask):
                             val = data[i,j,k]
                             if self.bitmap.get(val) != bitmask[bm_idx]:
                                 data[i,j,k] += -1 if val > 0 else 1
                             bm_idx += 1
 
-                            if bm_idx >= len(bitmask):
-                                return data, offset
+                            # if bm_idx >= len(bitmask):
+                            #     return data, offset
+
+                        elif bool(getrandbits(1)):
+                            data[i,j,k] += -1 if data[i,j,k] > 0 else 1
                         
                         iter_idx += 1
+            return data, offset
 
     def decode(self, encoded: np.ndarray, length: Optional[int] = None, offset: int = 0) -> str:
         end_idx = offset + length if length is not None else None
