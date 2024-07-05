@@ -4,8 +4,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 class Default:
-    mode = XMode.ENCODE
-    output_type = XOutput.INLINE
+    output_type = XOutput.FILE
     input_text = "If you're reading this it means you did not input any custom text, or maybe you wanted to see this message instead, well if so it worked! WOOP Your image is now secretly encoded with this message."
     input_file = None
     input_image = "sample.png"
@@ -17,8 +16,7 @@ class Default:
         arg_parser.add_argument(
             "--mode",
             "-m",
-            type=XMode,
-            default=Default.mode
+            type=XMode
         )
         arg_parser.add_argument(
             "--output-type",

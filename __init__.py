@@ -5,6 +5,7 @@ from base64 import b64decode, b64encode
 from var.const import Default
 from models.XMode import XMode
 from models.XOutput import XOutput
+from os.path import isfile
 
 
 def save(arr: np.ndarray, fname: str):
@@ -40,7 +41,7 @@ if __name__ == "__main__":
                 image_path=args.export_path,
                 key=key
             )
-            print(f"\n[ INFO ] Decoded text from the generated '{args.export_path}' file:\n\"\"\"\n{decoded}\n\"\"\"")
+            print(f"[ INFO ] Decoded text from the generated '{args.export_path}' file:\n\"\"\"\n{decoded}\n\"\"\"")
 
         elif args.output_type == XOutput.FILE:
             fpath = f"{args.export_path}.key"
@@ -49,13 +50,23 @@ if __name__ == "__main__":
                 f.write(key)
     
     elif args.mode == XMode.DECODE:
-        if key := args.key:
+        kfile = f"{args.input_image}.key"
+        key = args.key
+        if key is None and isfile(kfile):
+            try:
+                with open(kfile, "r") as f:
+                    key = f.read()
+            except Exception:
+                print(f"[ ERROR ] You have not specified a key, exiting...")
+                exit(1)
+        
+        if key := key:
+            print(key)
             decoded = st.decode_text_from_image(
                 image_path=args.input_image,
                 key=key
             )
-
-            print(f"\n[ SUCCESS ] Decoded text from the encoded '{args.export_path}' file:\n\"\"\"\n{decoded}\n\"\"\"")
+            print(f"[ SUCCESS ] Decoded text from the encoded '{args.export_path}' file:\n\"\"\"\n{decoded}\n\"\"\"")
         else:
             print(f"[ ERROR ] You have not specified a key, exiting...")
             exit(1)
