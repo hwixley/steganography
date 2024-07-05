@@ -26,8 +26,7 @@ class Default:
         arg_parser.add_argument(
             "--text",
             "-t", 
-            type=str, 
-            default=Default.input_text
+            type=str
         )
         arg_parser.add_argument(
             "--file",
@@ -38,13 +37,12 @@ class Default:
             "--input-image",
             "-i",
             type=Path,
-            default=Default.input_image
+            required=True
         )
         arg_parser.add_argument(
             "--export-path",
             "-e",
-            type=Path,
-            default=Default.export_path
+            type=Path
         )
         arg_parser.add_argument(
             "--key",
