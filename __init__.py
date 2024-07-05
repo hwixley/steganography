@@ -1,32 +1,18 @@
 from PIL import Image
 import numpy as np
 from services.steganographer import Steganographer
-from argparse import ArgumentParser
-from pathlib import Path
-from models.XMode import XMode
 from base64 import b64decode, b64encode
+from var.const import Default
+from models.XMode import XMode
+from models.XOutput import XOutput
 
 
 def save(arr: np.ndarray, fname: str):
     Image.fromarray(arr).save(fname)
 
 
-default_mode = XMode.ENCODE
-default_text = "If you're reading this it means you did not input any custom text, or maybe you wanted to see this message instead, well if so it worked! WOOP Your image is now secretly encoded with this message."
-default_img = "sample.png"
-default_dest = "encoded.png"
-
-arg_parser = ArgumentParser()
-arg_parser.add_argument("--mode", "-m", type=XMode, default=default_mode)
-arg_parser.add_argument("--text", "-t", type=str, default=default_text)
-arg_parser.add_argument("--file", "-f", type=Path)
-arg_parser.add_argument("--image", "-i", type=Path, default=default_img)
-arg_parser.add_argument("--output-path", "-o", type=Path, default=default_dest)
-arg_parser.add_argument("--key", "-k", type=str)
-
 if __name__ == "__main__":
-    args = arg_parser.parse_args()
-
+    args = Default.arg_parser().parse_args()
     st = Steganographer()
 
     if args.mode == XMode.ENCODE:
@@ -36,36 +22,44 @@ if __name__ == "__main__":
                 with open(fpath, "r") as f:
                     text = f.read()
             except Exception:
-                print(f"ERROR: the file '{fpath}' could not be opened, exiting...")
+                print(f"[ ERROR ] The file '{fpath}' could not be opened, exiting...")
                 exit(1)
 
         encoded, key = st.encode_text_to_image(
             text=text,
-            image_path=args.image
+            image_path=args.input_image
         )
-        save(arr=encoded, fname=args.output_path)
-        print(f"Decoding Key: (! keep this safe, you need it for decoding !)")
-        print(key)
+        save(arr=encoded, fname=args.export_path)
+        print(f"[ SUCCESS ] Encoded image saved to '{args.export_path}'")
 
-        decoded = st.decode_text_from_image(
-            image_path=args.output_path,
-            key=key
-        )
+        if args.output_type == XOutput.INLINE:
+            print(f"[ INFO ] Decoding Key: (! keep this safe, you need it for decoding !)")
+            print(key)
 
-        print(f"\nDecoded text from the generated '{args.output_path}' file:\n\"\"\"\n{decoded}\n\"\"\"")
+            decoded = st.decode_text_from_image(
+                image_path=args.export_path,
+                key=key
+            )
+            print(f"\n[ INFO ] Decoded text from the generated '{args.export_path}' file:\n\"\"\"\n{decoded}\n\"\"\"")
+
+        elif args.output_type == XOutput.FILE:
+            fpath = f"{args.export_path}.key"
+            print(f"[ INFO ] Exporting decoding key to '{fpath}' (! keep this safe, you need it for decoding !)")
+            with open(fpath, "w") as f:
+                f.write(key)
     
     elif args.mode == XMode.DECODE:
         if key := args.key:
             decoded = st.decode_text_from_image(
-                image_path=args.image,
+                image_path=args.input_image,
                 key=key
             )
 
-            print(f"\nDecoded text from the encoded '{args.output_path}' file:\n\"\"\"\n{decoded}\n\"\"\"")
+            print(f"\n[ SUCCESS ] Decoded text from the encoded '{args.export_path}' file:\n\"\"\"\n{decoded}\n\"\"\"")
         else:
-            print(f"ERROR: you have not specified a key, exiting...")
+            print(f"[ ERROR ] You have not specified a key, exiting...")
             exit(1)
 
     else:
-        print(f"ERROR: invalid mode '{args.mode}', exiting...")
+        print(f"[ ERROR ] invalid mode '{args.mode}', exiting...")
         exit(1)
