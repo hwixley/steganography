@@ -17,7 +17,7 @@ if __name__ == "__main__":
     args = Default.arg_parser().parse_args()
     st = Steganographer()
 
-    export_path = args.export_path or (f"{Path(args.input_image).stem}.ENCODED.png" if args.input_image is not None else None)
+    export_path = args.export_path or (f"{Path(args.input_image).stem}._encoded.png" if args.input_image is not None else None)
 
     if args.mode == XMode.ENCODE:
         text = args.text
