@@ -37,19 +37,17 @@ class XEncoder:
         if len(shape) == 2:
             for i in range(shape[0]):
                 for j in range(shape[1]):
-                    if iter_idx >= offset:
+                    if iter_idx >= offset and bm_idx < len(bitmask):
                         val = data[i,j]
                         if self.bitmap.get(val) != bitmask[bm_idx]:
                             data[i,j] += -1 if val > 0 else 1
                         bm_idx += 1
 
-                        if bm_idx >= len(bitmask):
-                            return data, offset
-
                     elif bool(getrandbits(1)):
-                        data[i,j] += -1 if val > 0 else 1
+                        data[i,j] += -1 if data[i,j] > 0 else 1
 
                     iter_idx += 1
+            return data, offset
 
         elif len(shape) == 3:
             for i in range(shape[0]):
@@ -60,9 +58,6 @@ class XEncoder:
                             if self.bitmap.get(val) != bitmask[bm_idx]:
                                 data[i,j,k] += -1 if val > 0 else 1
                             bm_idx += 1
-
-                            # if bm_idx >= len(bitmask):
-                            #     return data, offset
 
                         elif bool(getrandbits(1)):
                             data[i,j,k] += -1 if data[i,j,k] > 0 else 1
